@@ -1,0 +1,104 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Sat Dec  1 10:21:15 2018
+
+@author: James
+"""
+
+
+from datetime import datetime
+
+def CountingTradingDay(Day1, Day2):
+    T1 = datetime.strptime(Day1, "%Y%m%d")
+    T2 = datetime.strptime(Day2, "%Y%m%d")
+    NumofHoliday = Holiday(Day1,Day2)
+    NumofNonHoliday = Non_Holiday(Day1, Day2)
+    CalendarDays = abs((T2-T1).days)
+    NumofWeek = CalendarDays // 7
+    ResidualofDays = CalendarDays % 7
+    WeekofDay1 = T1.weekday()
+    WeekofDay2 = T2.weekday()
+    if ResidualofDays == 0:
+        if WeekofDay1 == 5:
+            return (CalendarDays + NumofNonHoliday - NumofWeek * 2 - NumofHoliday - 2)
+        elif WeekofDay1 == 6:
+            return (CalendarDays + NumofNonHoliday - NumofWeek * 2 - NumofHoliday - 1)
+        else:
+            return (CalendarDays + NumofNonHoliday - NumofWeek * 2 - NumofHoliday)
+    elif T1 > T2:
+        if WeekofDay1 > WeekofDay2:
+            if WeekofDay1 == 5:
+                return (CalendarDays + NumofNonHoliday - NumofWeek * 2 - NumofHoliday - 1)
+            else:
+                return (CalendarDays + NumofNonHoliday - NumofWeek * 2 - NumofHoliday - 2)
+        else:
+            if WeekofDay2 == 6:
+                return (CalendarDays + NumofNonHoliday - NumofWeek * 2 - NumofHoliday - 1)
+            else:
+                return (CalendarDays + NumofNonHoliday - NumofWeek * 2 - NumofHoliday - 2)
+    elif T2 > T1:
+        if WeekofDay2 > WeekofDay1:
+            if WeekofDay2 == 5:
+                return (CalendarDays + NumofNonHoliday - NumofWeek * 2 - NumofHoliday - 1)
+            else:
+                return (CalendarDays + NumofNonHoliday - NumofWeek * 2 - NumofHoliday - 2)
+        else:
+            if WeekofDay1 == 6:
+                return (CalendarDays + NumofNonHoliday - NumofWeek * 2 - NumofHoliday - 1)
+            else:
+                return (CalendarDays + NumofNonHoliday - NumofWeek * 2 - NumofHoliday - 2)
+
+def Holiday(Day1, Day2):
+    HolidayList = ['20181231', '20190101', '20190131', '20190201', '20190204', \
+                   '20190205', '20190206', '20190207', '20190208', '20190228', \
+                   '20190301', '20190404', '20190405', '20190501', '20190607', \
+                   '20190913', '20191010', '20191011']
+    T1 = datetime.strptime(Day1, "%Y%m%d")
+    T2 = datetime.strptime(Day2, "%Y%m%d")
+    NumofHoliday = 0
+    if T1 > T2:
+        for day in HolidayList:
+            if  (datetime.strptime(day, "%Y%m%d") > T2) and (datetime.strptime(day, "%Y%m%d") < T1):
+                NumofHoliday += 1
+            elif (datetime.strptime(day, "%Y%m%d") > T2) and (datetime.strptime(day, "%Y%m%d") > T1):
+                break
+    else:
+        for day in HolidayList:
+            if (datetime.strptime(day, "%Y%m%d") > T1) and (datetime.strptime(day, "%Y%m%d") < T2):
+                NumofHoliday +=1
+            elif (datetime.strptime(day, "%Y%m%d") > T1) and (datetime.strptime(day, "%Y%m%d") > T2):
+                    break
+    return NumofHoliday
+def Non_Holiday(Day1, Day2):
+    Non_HolidayList = ['20181222']
+    T1 = datetime.strptime(Day1, "%Y%m%d")
+    T2 = datetime.strptime(Day2, "%Y%m%d")
+    NumofNonHoliday = 0
+    if T1 > T2:
+        for day in Non_HolidayList:
+            if  (datetime.strptime(day, "%Y%m%d") > T2) and (datetime.strptime(day, "%Y%m%d") < T1):
+                NumofNonHoliday += 1
+            elif (datetime.strptime(day, "%Y%m%d") > T2) and (datetime.strptime(day, "%Y%m%d") > T1):
+                break
+    else:
+        for day in Non_HolidayList:
+            if (datetime.strptime(day, "%Y%m%d") > T1) and (datetime.strptime(day, "%Y%m%d") < T2):
+                NumofNonHoliday +=1
+            elif (datetime.strptime(day, "%Y%m%d") > T1) and (datetime.strptime(day, "%Y%m%d") > T2):
+                    break
+    return NumofNonHoliday
+    
+if __name__ == "__main__":
+    T1 = ['20181205', '20190105', '20190214', '20190321', '20190410', '20190504']
+    T2 = ['20190614', '20181224', '20190914', '20190810', '20191130', '20191210']
+    test1 = []
+    test2 = []
+    for i in range(len(T1)):    
+        test1.append(CountingTradingDay(T1[i], T2[i]))
+        test2.append(CountingTradingDay(T2[i], T1[i]))
+    print(test1)
+    print('-------')
+    print(test2)
+
+        
+        
